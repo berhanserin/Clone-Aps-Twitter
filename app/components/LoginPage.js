@@ -4,12 +4,30 @@ import * as yup from 'yup';
 import {Formik} from 'formik';
 import Textinput from '../commons/Textinput';
 import Buttons from '../commons/Buttons';
-import LoginActions from '../redux/actions/loginAction';
 import {connect, useDispatch} from 'react-redux';
-import {login} from '../redux/actions/loginAction';
+import {useQuery, useMutation} from '@apollo/react-hooks';
+import {LoginMutations} from './../commons/Mutation';
+import {setLoginState} from '../redux/actions/loginAction';
+import {setUserName} from '../redux/actions/userAction';
 
-const LoginPage = ({navigation}) => {
+const LoginPage = ({navigation, state}) => {
+  const [loginMut] = useMutation(LoginMutations, {
+    onError: _err => {
+      Alert.alert('Giriş Sorunu', 'Kullanıcı adı ve/veya Email Hatalı', [
+        {
+          text: 'Tamam',
+          style: 'default',
+          // onPress:()=>
+        },
+      ]);
+    },
+  });
   const dispatch = useDispatch();
+  const successLogin = value => {
+    dispatch(setLoginState(true));
+    //PostList
+    navigation.navigate('Drawer');
+  };
   return (
     <View style={styles.container}>
       <View style={styles.loginArea}>
@@ -21,7 +39,7 @@ const LoginPage = ({navigation}) => {
               .required('Kullanıcı adı/ Email Adresi Zorunlu'),
             password: yup
               .string()
-              .min(5, ({min}) => `Minimum ${min} karakter giriniz.`)
+              .min(4, ({min}) => `Minimum ${min} karakter giriniz.`)
               .required('Şifre zorunlu'),
           })}
           initialValues={{
@@ -29,8 +47,16 @@ const LoginPage = ({navigation}) => {
             password: '',
           }}
           onSubmit={async (values, {resetForm}) => {
-            dispatch(LoginActions.setLoginState(true));
-            console.log(this.state.isLogin);
+            const {data, loading, error} = await loginMut({
+              variables: {
+                kname: values.email,
+                password: values.password,
+              },
+            });
+            if (data) {
+              dispatch(setUserName(data.girisYap));
+              successLogin(true);
+            }
           }}>
           {({
             handleChange,
@@ -65,11 +91,11 @@ const LoginPage = ({navigation}) => {
                 <Text style={styles.errors}>{errors.password}</Text>
               )}
               <View style={styles.registerArea}>
-                <Text>Hesabınız var mı? </Text>
+                <Text>Hesabınız yok mu? </Text>
                 <Buttons />
                 <TouchableOpacity
                   onPress={() => navigation.navigate('Register')}>
-                  <Text style={styles.registerText}>Hesaba giriş yap</Text>
+                  <Text style={styles.registerText}>Şimdi Kadolun</Text>
                 </TouchableOpacity>
               </View>
               <Buttons
@@ -122,9 +148,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  return {
-    Login: state.isLogin,
-  };
+  return {Login: state.login};
 };
 
 export default connect(mapStateToProps)(LoginPage);

@@ -1,21 +1,31 @@
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import LoginPage from './components/LoginPage';
 import {Provider} from 'react-redux';
 import {store} from './redux/store';
+import {
+  ApolloClient,
+  InMemoryCache,
+  HttpLink,
+  ApolloProvider,
+} from '@apollo/client';
+import Router from './Routing';
+import {Provider as PaperProvider} from 'react-native-paper';
 
-const Stack = createNativeStackNavigator();
+const client = new ApolloClient({
+  link: new HttpLink({
+    uri: 'http://192.168.1.105:4000/graphql',
+  }),
+  cache: new InMemoryCache(),
+});
 
 const App = () => {
   return (
-    <Provider store={store}>
-      <NavigationContainer>
-        <Stack.Navigator screenOptions={{headerShown: false}}>
-          <Stack.Screen name="Home" component={LoginPage} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </Provider>
+    <PaperProvider>
+      <ApolloProvider client={client}>
+        <Provider store={store}>
+          <Router />
+        </Provider>
+      </ApolloProvider>
+    </PaperProvider>
   );
 };
 

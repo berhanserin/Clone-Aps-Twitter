@@ -1,10 +1,8 @@
 import {SET_LOGIN_STATE} from './actionsTpe';
 
-const setLoginState = loginData => {
+export const setLoginState = data => {
   return {
     type: SET_LOGIN_STATE,
-    payload: loginData,
+    payload: data,
   };
 };
-
-export default {setLoginState};
