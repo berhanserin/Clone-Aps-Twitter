@@ -5,12 +5,13 @@ import * as yup from 'yup';
 import {Formik} from 'formik';
 import Buttons from './../commons/Buttons';
 import Textinput from './../commons/Textinput';
-import {AddPostMutations} from './../commons/Mutation';
+import {UpdatePostMutations} from './../commons/Mutation';
 import {useMutation} from '@apollo/react-hooks';
 
-const PostAdd = ({navigation, state}) => {
-  const user = useSelector(state => state.user);
-  const [AddPost] = useMutation(AddPostMutations, {
+const UpdatePost = ({navigation, route}) => {
+  const {postId, body} = route.params;
+  console.log(route.params);
+  const [uPost] = useMutation(UpdatePostMutations, {
     onError: _err => {
       Alert.alert(_err.name, _err.message, [
         {
@@ -34,14 +35,14 @@ const PostAdd = ({navigation, state}) => {
             .required('Post Girmeniz Zorunlu'),
         })}
         initialValues={{
-          body: '',
-          id: user.id,
+          body: body,
+          id: postId,
         }}
         onSubmit={async (values, {navigation}) => {
           console.log(values);
-          const {data, error, loading} = await AddPost({
+          const {data, error, loading} = await uPost({
             variables: {
-              uname: values.id,
+              id: values.id,
               text: values.body,
             },
           });
@@ -107,4 +108,4 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
   return {user: state.user};
 };
-export default connect(mapStateToProps)(PostAdd);
+export default connect(mapStateToProps)(UpdatePost);

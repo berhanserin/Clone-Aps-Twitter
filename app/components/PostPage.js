@@ -1,41 +1,34 @@
-import React, {Component} from 'react';
+import React, {Component, useEffect} from 'react';
 import {Text, StyleSheet, View, Alert, TouchableOpacity} from 'react-native';
 import {connect} from 'react-redux';
 import {useSelector, useDispatch} from 'react-redux';
 import {useQuery, useMutation} from '@apollo/react-hooks';
 import {gelAllPost} from './../commons/Query';
 import PostItem from './../commons/PostItem';
+import {FlatList} from 'react-native-gesture-handler';
 
 const PostPage = ({state, navigation}) => {
-  const {data, error, loading} = useQuery(gelAllPost, {
-    onError: _err => {
-      Alert.alert('Giriş Sorunu', 'Kullanıcı adı ve/veya Email Hatalı', [
-        {
-          text: 'Tamam',
-          style: 'default',
-          // onPress:()=>
-        },
-      ]);
-    },
-  });
+  const {data, error, loading} = useQuery(gelAllPost);
+
   if (data) {
     return (
-      <View>
+      <View style={styles.container}>
         <TouchableOpacity
           style={styles.addButton}
           onPress={() => navigation.navigate('PostAdd')}>
           <Text>Ekle</Text>
         </TouchableOpacity>
-        {data.getPost.map(item => (
-          <PostItem key={item.id} item={item} />
-        ))}
+        <FlatList
+          data={data.getPost}
+          renderItem={({item}) => <PostItem key={item.id} item={item} />}
+        />
       </View>
     );
   }
   if (loading) {
     return (
       <View>
-        <Text> textInComponent </Text>
+        <Text>Post yükleniyor</Text>
       </View>
     );
   }
@@ -46,7 +39,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     marginTop: 10,
     alignItems: 'center',
+    marginBottom: 5,
   },
+  container: {flex: 1},
 });
 
 const mapStateToProps = state => {

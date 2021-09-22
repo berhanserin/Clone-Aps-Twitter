@@ -2,7 +2,8 @@ import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import {connect, useSelector} from 'react-redux';
+import {connect, useSelector, useDispatch} from 'react-redux';
+import {setLoginState} from './../redux/actions/loginAction';
 import {
   useTheme,
   Avatar,
@@ -16,6 +17,7 @@ import {
 } from 'react-native-paper';
 
 export function DrawerCustom({props, navigation}) {
+  const dispatch = useDispatch();
   const user = useSelector(state => state.user);
   return (
     <View style={{flex: 1}}>
@@ -55,7 +57,7 @@ export function DrawerCustom({props, navigation}) {
           )}
           label="Çıkış Yap"
           onPress={() => {
-            alert('Çıkış');
+            dispatch(setLoginState(false));
           }}
         />
       </Drawer.Section>

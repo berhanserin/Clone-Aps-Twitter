@@ -55,6 +55,7 @@ const LoginPage = ({navigation, state}) => {
             });
             if (data) {
               dispatch(setUserName(data.girisYap));
+              resetForm('');
               successLogin(true);
             }
           }}>

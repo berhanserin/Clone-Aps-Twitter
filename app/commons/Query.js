@@ -5,6 +5,7 @@ export const gelAllPost = gql`
       id
       kullanici {
         kullaniciAd
+        id
       }
       body
       olusturulmaTarihi

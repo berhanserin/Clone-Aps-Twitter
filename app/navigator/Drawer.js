@@ -5,6 +5,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import {DrawerCustom} from './../commons/DrawerCustom';
 import {TouchableOpacity, Text} from 'react-native';
 import PostAdd from './../components/PostAdd';
+import UpdatePost from './../components/UpdatePost';
 
 const drawer = createDrawerNavigator();
 
@@ -12,7 +13,6 @@ const Drawer = navigation => {
   return (
     <drawer.Navigator
       drawerContent={props => <DrawerCustom {...props} />}
-      text="1234"
       screenOptions={{drawerType: 'slide'}}>
       <drawer.Screen
         name="Post"
@@ -22,6 +22,7 @@ const Drawer = navigation => {
         }}
       />
       <drawer.Screen name="PostAdd" component={PostAdd} />
+      <drawer.Screen name="PostUpdate" component={UpdatePost} />
     </drawer.Navigator>
   );
 };

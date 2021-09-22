@@ -1,4 +1,4 @@
-import {gql, useMutation} from '@apollo/client';
+import {gql} from '@apollo/client';
 
 export const LoginMutations = gql`
   mutation girisYap($kname: String!, $password: String!) {
@@ -25,7 +25,13 @@ export const RegisterMutations = gql`
 `;
 
 export const AddPostMutations = gql`
-  mutation addPost($uname: String!, $text: String!) {
+  mutation addPost($uname: ID!, $text: String!) {
     addPost(KullaniciId: $uname, body: $text)
+  }
+`;
+
+export const UpdatePostMutations = gql`
+  mutation ($id: ID!, $text: String!) {
+    updatePost(postId: $id, body: $text)
   }
 `;
